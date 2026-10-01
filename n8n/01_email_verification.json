@@ -1,0 +1,73 @@
+{
+  "name": "01 - YatraFlow Email Verification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "yatraflow-events",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "YatraFlow Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.event_type }}",
+              "value2": "EMAIL_VERIFICATION_REQUESTED"
+            }
+          ]
+        }
+      },
+      "id": "filter-node",
+      "name": "Filter Verification Event",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "no-reply@yatraflow.ai",
+        "toEmail": "={{ $json.body.data.email }}",
+        "subject": "={{ $json.body.language === 'ta' ? 'உங்கள் மின்னஞ்சலை சரிபார்க்கவும் — YatraFlow' : ($json.body.language === 'hi' ? 'अपना ईमेल पता सत्यापित करें — YatraFlow' : 'Verify your email address — YatraFlow') }}",
+        "html": "={{ $json.body.data.email_html }}",
+        "options": {}
+      },
+      "id": "send-email-node",
+      "name": "Send Verification Email (SMTP / SendGrid)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [660, 280]
+    }
+  ],
+  "connections": {
+    "YatraFlow Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter Verification Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Verification Event": {
+      "main": [
+        [
+          {
+            "node": "Send Verification Email (SMTP / SendGrid)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

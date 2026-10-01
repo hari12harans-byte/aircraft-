@@ -1,0 +1,111 @@
+{
+  "name": "07 - YatraFlow Connection Risk Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "yatraflow-connection-risk",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "wh-risk",
+      "name": "Connection Risk Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.event_type }}",
+              "value2": "CONNECTION_AT_RISK"
+            }
+          ]
+        }
+      },
+      "id": "if-risk",
+      "name": "Is Connection At Risk?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "options": {
+          "headers": {
+            "Authorization": "=Bearer {{ $env.WHATSAPP_ACCESS_TOKEN }}",
+            "Content-Type": "application/json"
+          }
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.body.data.phone }}"
+            },
+            {
+              "name": "type",
+              "value": "template"
+            }
+          ]
+        }
+      },
+      "id": "http-whatsapp",
+      "name": "Meta WhatsApp Cloud API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [680, 240]
+    },
+    {
+      "parameters": {
+        "fromEmail": "alerts@yatraflow.ai",
+        "toEmail": "={{ $json.body.data.email }}",
+        "subject": "⚠️ Urgent: Connection At Risk — YatraFlow",
+        "html": "={{ $json.body.data.email_html }}",
+        "options": {}
+      },
+      "id": "email-risk",
+      "name": "Urgent Email Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [680, 400]
+    }
+  ],
+  "connections": {
+    "Connection Risk Webhook": {
+      "main": [
+        [
+          {
+            "node": "Is Connection At Risk?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Connection At Risk?": {
+      "main": [
+        [
+          {
+            "node": "Meta WhatsApp Cloud API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Urgent Email Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

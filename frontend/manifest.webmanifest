@@ -1,15 +1,35 @@
 {
-  "name": "YatraFlow \u2014 Airport Connection Copilot",
+  "name": "YatraFlow — Intelligent Airport Connection Companion",
   "short_name": "YatraFlow",
+  "description": "Your intelligent airport connection companion with live flight telemetry, indoor gate navigation, baggage tracking, and emergency assistance.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f4f7fb",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0f16",
   "theme_color": "#0b63ce",
   "icons": [
     {
       "src": "/icons/favicon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Search Flights",
+      "url": "/#flights",
+      "description": "Search flights and live status"
+    },
+    {
+      "name": "Airport Map",
+      "url": "/#map",
+      "description": "Live airport navigation map"
+    },
+    {
+      "name": "Emergency SOS",
+      "url": "/#sos",
+      "description": "Instant 112 emergency assistance"
     }
   ]
 }

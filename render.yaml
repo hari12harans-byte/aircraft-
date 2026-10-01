@@ -1,0 +1,43 @@
+services:
+  # ----------------------------------------------------------------------------
+  # YatraFlow Full-Stack / FastAPI Web Service on Render
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: yatraflow-service
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install --no-cache-dir -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: OPEN_SKY_ENABLED
+        value: "1"
+      - key: OPEN_METEO_ENABLED
+        value: "1"
+      - key: REFRESH_SECONDS
+        value: "30"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: N8N_WEBHOOK_URL
+        sync: false
+      - key: N8N_WEBHOOK_SECRET
+        generateValue: true
+      - key: AVIATIONSTACK_API_KEY
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_ACCESS_TOKEN
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false

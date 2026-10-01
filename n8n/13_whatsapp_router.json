@@ -1,0 +1,92 @@
+{
+  "name": "13 - YatraFlow WhatsApp Notification Router",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "yatraflow-whatsapp-router",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "wh-wa-router",
+      "name": "WhatsApp Inbound Router Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.body.channels.includes('whatsapp') }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-wa-enabled",
+      "name": "Is WhatsApp Channel Requested?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "options": {
+          "headers": {
+            "Authorization": "=Bearer {{ $env.WHATSAPP_ACCESS_TOKEN }}",
+            "Content-Type": "application/json"
+          }
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.body.data.phone }}"
+            },
+            {
+              "name": "type",
+              "value": "template"
+            }
+          ]
+        }
+      },
+      "id": "wa-send",
+      "name": "Meta WhatsApp Cloud API Node",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [680, 280]
+    }
+  ],
+  "connections": {
+    "WhatsApp Inbound Router Webhook": {
+      "main": [
+        [
+          {
+            "node": "Is WhatsApp Channel Requested?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is WhatsApp Channel Requested?": {
+      "main": [
+        [
+          {
+            "node": "Meta WhatsApp Cloud API Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
