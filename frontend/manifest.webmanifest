@@ -1,0 +1,15 @@
+{
+  "name": "YatraFlow \u2014 Airport Connection Copilot",
+  "short_name": "YatraFlow",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#0b63ce",
+  "icons": [
+    {
+      "src": "/icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

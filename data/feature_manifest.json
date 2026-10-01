@@ -1,0 +1,35 @@
+{
+  "product": "YatraFlow",
+  "version": "3.0-integrated",
+  "ui": "professional-light-no-glassmorphism",
+  "modules": [
+    "live-flight-monitoring",
+    "connection-risk-engine",
+    "passenger-identity",
+    "airport-digital-twin",
+    "device-location",
+    "accessible-navigation",
+    "baggage-intelligence",
+    "ground-transport",
+    "gate-coordination",
+    "missed-connection-recovery",
+    "baggage-recovery",
+    "ai-event-orchestration",
+    "voice-copilot",
+    "CARE-accessibility",
+    "emergency-112",
+    "assistance-requests",
+    "notifications",
+    "offline-pwa",
+    "simulation-engine",
+    "operations-dashboard",
+    "analytics",
+    "supabase-ready",
+    "mobile-apk-ready"
+  ],
+  "honesty_rules": [
+    "Static demo data is never presented as live telemetry.",
+    "Indoor gate positioning requires airport-approved BLE/Wi-Fi/UWB infrastructure.",
+    "External rebooking/baggage providers require authorized credentials."
+  ]
+}
