@@ -1640,3 +1640,8 @@ def static_handler(path: str):
     if str(requested).startswith(str(FRONT.resolve())) and requested.exists() and requested.is_file():
         return FileResponse(requested)
     return FileResponse(FRONT / 'index.html')
+
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', '8000'))
+    import uvicorn
+    uvicorn.run('backend.main:app', host='0.0.0.0', port=port, proxy_headers=True)
