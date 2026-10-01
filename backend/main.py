@@ -796,7 +796,7 @@ def health():
             'weather': weather_prov.get_metadata(),
             'radar': radar_prov.get_metadata(),
             'google_oauth': google_prov.get_metadata(),
-            'supabase': supabase_prov.ping()
+            'supabase': 'Configured' if supabase_prov.is_configured else 'Ready / Optional'
         }
     }
 
