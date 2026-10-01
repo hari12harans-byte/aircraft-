@@ -1,9 +1,20 @@
 from __future__ import annotations
 import asyncio, datetime, hashlib, hmac, json, os, re, secrets, sqlite3, time, urllib.request
 from typing import Optional
+from pathlib import Path
+from dotenv import load_dotenv
 
-N8N_WEBHOOK_URL = os.getenv('N8N_WEBHOOK_URL', '').strip()
-N8N_WEBHOOK_SECRET = os.getenv('N8N_WEBHOOK_SECRET', 'yatraflow-n8n-secure-secret-2026').strip()
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
+
+def get_webhook_url() -> str:
+    return os.getenv('N8N_WEBHOOK_URL', '').strip()
+
+def get_webhook_secret() -> str:
+    return os.getenv('N8N_WEBHOOK_SECRET', 'yatraflow-n8n-secure-secret-2026').strip()
+
+N8N_WEBHOOK_URL = get_webhook_url()
+N8N_WEBHOOK_SECRET = get_webhook_secret()
 WHATSAPP_PHONE_NUMBER_ID = os.getenv('WHATSAPP_PHONE_NUMBER_ID', '').strip()
 WHATSAPP_ACCESS_TOKEN = os.getenv('WHATSAPP_ACCESS_TOKEN', '').strip()
 
@@ -156,7 +167,8 @@ async def dispatch_automation_event(
 
     payload_json = json.dumps(event_payload, separators=(',', ':'))
     payload_bytes = payload_json.encode('utf-8')
-    signature = sign_payload(payload_bytes)
+    active_secret = get_webhook_secret()
+    signature = sign_payload(payload_bytes, secret=active_secret)
 
     # In-app logging
     for ch in allowed_channels:
@@ -169,10 +181,11 @@ async def dispatch_automation_event(
     # Outbound webhook delivery to n8n
     dispatch_status = "DELIVERED"
     error_msg = ""
-    if N8N_WEBHOOK_URL:
+    active_webhook_url = get_webhook_url()
+    if active_webhook_url:
         try:
             req = urllib.request.Request(
-                N8N_WEBHOOK_URL,
+                active_webhook_url,
                 data=payload_bytes,
                 headers={
                     'Content-Type': 'application/json',

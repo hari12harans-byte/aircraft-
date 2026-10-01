@@ -1,8 +1,11 @@
-from __future__ import annotations
 import asyncio, hashlib, hmac, json, math, os, secrets, sqlite3, time, urllib.parse, urllib.request, datetime
+from typing import Optional, Any, Union
 from pathlib import Path
-from typing import Optional, Any
 from dotenv import load_dotenv
+
+BASE = Path(__file__).resolve().parent.parent
+load_dotenv(BASE / '.env')
+
 from fastapi import FastAPI, HTTPException, Request, Response, Cookie, Header, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, Response as PlainResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,9 +31,6 @@ from backend.automation import (
     get_whatsapp_template_message
 )
 from backend.email_templates import get_email_template
-
-BASE = Path(__file__).resolve().parent.parent
-load_dotenv(BASE / '.env')
 
 FRONT = BASE / 'frontend'; DATA = BASE / 'data'; DATA.mkdir(exist_ok=True)
 DB = DATA / 'guardian.db'
@@ -796,7 +796,7 @@ def health():
             'weather': weather_prov.get_metadata(),
             'radar': radar_prov.get_metadata(),
             'google_oauth': google_prov.get_metadata(),
-            'supabase': 'Configured' if (SUPABASE_URL and SUPABASE_ANON_KEY) else 'Ready / Optional'
+            'supabase': supabase_prov.ping()
         }
     }
 
@@ -815,7 +815,7 @@ def system_status():
             'calendar': calendar_prov.get_metadata(),
             'fare_alerts': fare_prov.get_metadata(),
             'google_oauth': google_prov.get_metadata(),
-            'supabase': {'status': 'LIVE' if (SUPABASE_URL and SUPABASE_ANON_KEY) else 'DEMO', 'provider': 'Supabase PostgreSQL'}
+            'supabase': supabase_prov.ping()
         },
         'environment': {
             'api_base_url': API_BASE_URL,
@@ -960,6 +960,7 @@ def platform_overview(token: Optional[str] = Cookie(default=None, alias='yatrafl
             'emergency_assistance': 'INDIA 112 + AIRPORT SECURITY',
             'travel_timeline': 'ACTIVE JOURNEY STAGES',
             'saved_trips': 'LOCAL + DB PERSISTENCE',
+            'database_supabase': 'LIVE (CONNECTED)' if supabase_prov.ping().get('connected') else 'LOCAL SQLITE (ACTIVE)',
             'fare_alerts': 'PRICE DROP ENGINE',
             'pwa_installation': 'OFFLINE SHELL READY',
             'android_readiness': 'CAPACITOR READY'

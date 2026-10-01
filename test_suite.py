@@ -10,7 +10,7 @@ def req(url, data=None, headers=None, method='GET'):
     if body:
         h['Content-Type'] = 'application/json'
     r = urllib.request.Request(url, data=body, headers=h, method=method)
-    with opener.open(r, timeout=12) as resp:
+    with opener.open(r, timeout=25) as resp:
         return resp.status, json.loads(resp.read().decode('utf-8'))
 
 print('=== 1. Health & System Status ===')
