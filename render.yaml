@@ -22,15 +22,15 @@ services:
       - key: REFRESH_SECONDS
         value: "30"
       - key: SUPABASE_URL
-        sync: false
+        value: "https://arlfxfsmlepznypaeqwc.supabase.co"
       - key: SUPABASE_ANON_KEY
-        sync: false
+        value: "sb_publishable_11LrGL-EY2-nd4p97mes1A_WKLeTf3o"
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: N8N_WEBHOOK_URL
-        sync: false
+        value: "https://linker.app.n8n.cloud/webhook-test/8a47bacd-819a-40ce-a07b-36bc1fbf4f56"
       - key: N8N_WEBHOOK_SECRET
-        generateValue: true
+        value: "yatraflow-n8n-secure-secret-2026"
       - key: AVIATIONSTACK_API_KEY
         sync: false
       - key: WHATSAPP_PHONE_NUMBER_ID
